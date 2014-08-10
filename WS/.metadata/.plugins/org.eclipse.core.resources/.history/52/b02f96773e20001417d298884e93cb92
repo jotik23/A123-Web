@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="A123Web">
+        <property name="context-root" value="A123Web"/>
+        <property name="java-output-path" value="/A123Web/build/classes"/>
+    </wb-module>
+</project-modules>

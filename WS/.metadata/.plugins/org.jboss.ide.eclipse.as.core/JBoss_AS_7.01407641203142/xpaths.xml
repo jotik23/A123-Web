@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xpaths>
+  <category name="Ports">
+    <query attribute="port" dir="${jboss_config_dir}" filePattern="${jboss_config_file}" name="JBoss Web" xpathPattern="//*[@name=&quot;standard-sockets&quot;]/*[@name=&quot;http&quot;]"/>
+    <query attribute="port" dir="${jboss_config_dir}" filePattern="${jboss_config_file}" name="JBoss Management" xpathPattern="//*[local-name()=&quot;management-interfaces&quot;]/*[local-name()=&quot;native-interface&quot;]"/>
+  </category>
+</xpaths>
