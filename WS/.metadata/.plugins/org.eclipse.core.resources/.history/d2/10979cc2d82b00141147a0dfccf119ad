@@ -1,0 +1,58 @@
+package co.a123.mediacion.events;
+
+import java.util.Map;
+
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.packet.Packet;
+
+import co.a123.mediacion.gcm.PacketExtension;
+import co.a123.mediacion.util.Generator;
+
+public class EventImplementation implements EventInterface{
+
+	private XMPPConnection connection;
+	
+	public EventImplementation(XMPPConnection connection) {
+		this.connection = connection;
+	}
+	
+	@Override
+	public void manipularAckEvent(Map<String, Object> jsonObject) {
+		String messageId = jsonObject.get("message_id").toString();
+		String from = jsonObject.get("from").toString();
+		System.out.println("handleAckReceipt() from: " + from + ", messageId: " + messageId);
+	}
+
+	@Override
+	public void manipularNackEvent(Map<String, Object> jsonObject) {
+		String messageId = jsonObject.get("message_id").toString();
+		String from = jsonObject.get("from").toString();
+		System.out.println("handleNackReceipt() from: " + from + ", messageId: " + messageId);
+	}
+
+	@Override
+	public void manipularRegistroDispositivo(Map<String, Object> jsonObject) {
+		Map<String, String> payload = (Map<String, String>) jsonObject.get("data");
+		String name = payload.get("name").toString();
+		
+		//addUser(name, from);
+		// Send an REGISTER response back
+		payload.put("message", "Registration successful");
+		String echo = createJsonMessage(from, Generator.getRandomMessageId(),payload, null, null, false);
+		send(echo);
+		System.out.println("Adding new user: " + name + ":" + from);
+	}
+
+	@Override
+	public void manipularEliminacionDispositivo(Map<String, Object> jsonObject) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void send(String jsonRequest) {
+		Packet request = new PacketExtension(jsonRequest).toPacket();
+		connection.sendPacket(request);
+	}
+
+}

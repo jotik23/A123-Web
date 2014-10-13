@@ -1,0 +1,19 @@
+package co.a123.mediacion.events;
+
+import java.util.Map;
+
+public class EventImplementation implements EventInterface{
+
+	@Override
+	public void manipularAckEvent(Map<String, Object> jsonObject) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void manipularNackEvent(Map<String, Object> jsonObject) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

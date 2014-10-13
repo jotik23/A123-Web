@@ -1,0 +1,5 @@
+package co.a123.mediacion.events;
+
+public class EventInterface {
+
+}

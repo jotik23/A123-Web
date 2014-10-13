@@ -1,0 +1,12 @@
+package co.a123.mediacion.gcm;
+
+
+/**
+ * Smack client implementation for GCM Cloud Connection Server.
+ * 
+ * <p>
+ * For illustration purposes only.
+ */
+public class GoogleConnectionManager {
+
+}

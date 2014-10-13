@@ -1,0 +1,133 @@
+package co.a123.mediacion.events;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.PacketInterceptor;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.ParseException;
+
+import co.a123.mediacion.gcm.PacketExtension;
+import co.a123.mediacion.util.Constant;
+import co.a123.mediacion.util.Generator;
+import static co.a123.mediacion.events.EventInterface.EVENTOS;
+
+public class EventManager {
+
+	private XMPPConnection connection;
+	private EventInterface eventInterface = new EventImplementation(connection);
+	public final ConnectionListener CONNECTION_LISTENER = new ConnectionListener() {
+
+		@Override
+		public void reconnectionSuccessful() {
+			System.out.println("Reconnectando..");
+		}
+
+		@Override
+		public void reconnectionFailed(Exception e) {
+			System.out.println("Reconexi—n Fallida:  "+ e);
+		}
+
+		@Override
+		public void reconnectingIn(int seconds) {
+			System.out.println("Reconectando en "+seconds+" segundos");
+		}
+
+		@Override
+		public void connectionClosedOnError(Exception e) {
+			System.out.println("Connexi—n cerrar por el error:"+e.getMessage());
+		}
+
+		@Override
+		public void connectionClosed() {
+			System.out.println("Conexi—n cerrada.");
+		}
+	};
+	
+	// Handle incoming packets
+	public  final PacketListener PACKET_LISTENER = new PacketListener() {
+
+		@Override
+		public void processPacket(Packet packet) {
+			procesarPaquetesEntrada(packet);
+		}
+	};
+	
+	public  final PacketInterceptor PACKET_INTERCEPTOR = new PacketInterceptor() {
+		@Override
+		public void interceptPacket(Packet packet) {
+			System.out.println("Sent: "+ packet.toXML());
+		}
+	};
+	
+	public EventManager(XMPPConnection connection){
+		this.connection = connection;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public  void procesarPaquetesEntrada(Packet packet){
+		
+		System.out.println("Received: " + packet.toXML());
+		Message incomingMessage = (Message) packet;
+		PacketExtension gcmPacket = (PacketExtension) incomingMessage.getExtension(Constant.GCM_NAMESPACE);
+		String json = gcmPacket.getJson();
+		try {
+			Map<String, Object> jsonObject = (Map<String, Object>) JSONValue.parseWithException(json);
+
+			Object messageType = jsonObject.get("message_type");
+
+			if (messageType == null) {
+				handleIncomingDataMessage(jsonObject);
+			} else if (EVENTOS.ACK.toString().equalsIgnoreCase(messageType.toString())) {
+				eventInterface.manipularAckEvent(jsonObject);
+			} else if (EVENTOS.NACK.toString().equalsIgnoreCase(messageType.toString())) {
+				eventInterface.manipularNackEvent(jsonObject);
+			} else {
+				System.out.println("Unrecognized message type: " +messageType.toString());
+			}
+			
+		} catch (ParseException e) {
+			System.out.println("Error parsing JSON " + json+ ": "+e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Couldn't send echo."+ e.getMessage());
+		}
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public  void handleIncomingDataMessage(Map<String, Object> jsonObject) {
+		
+		Map<String, String> payload = (Map<String, String>) jsonObject.get("data");
+		String from = jsonObject.get("from").toString();
+		//String packageName = jsonObject.get("category").toString();
+		String action = payload.get("action");
+		
+		if (action.equalsIgnoreCase(EVENTOS.REGISTRAR_DISPOSITIVO.toString())) {
+			eventInterface.manipularRegistroDispositivo(jsonObject);
+		} else if (action.equalsIgnoreCase(EVENTOS.ELIMINAR_DISPOSITIVO.toString())) {
+			eventInterface.manipularEliminacionDispositivo(jsonObject);
+		} else {
+			System.out.println("Unkown action sent: " + action);
+		}
+		
+		// Send ACK to CCS
+		String messageId = jsonObject.get("message_id").toString();
+		from = jsonObject.get("from").toString();
+		String ack = createJsonAck(from, messageId);
+		eventInterface.send(ack);
+	}
+
+
+	
+    
+
+    
+    
+}

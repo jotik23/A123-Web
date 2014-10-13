@@ -1,0 +1,13 @@
+package co.a123.mediacion.events;
+
+import java.util.Map;
+
+public interface EventInterface {
+
+	public enum EVENTOS{
+		
+	}
+	
+	void manipularAckEvent(Map<String, Object> jsonObject);
+	void manipularNackEvent(Map<String, Object> jsonObject);
+}

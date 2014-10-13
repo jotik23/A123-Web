@@ -1,0 +1,21 @@
+package co.a123.mediacion.events;
+
+import java.util.Map;
+import java.util.logging.Level;
+
+public class EventImplementation implements EventInterface{
+
+	@Override
+	public void manipularAckEvent(Map<String, Object> jsonObject) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void manipularNackEvent(Map<String, Object> jsonObject) {
+		String messageId = jsonObject.get("message_id").toString();
+		String from = jsonObject.get("from").toString();
+		logger.log(Level.INFO, "handleNackReceipt() from: " + from + ", messageId: " + messageId);
+	}
+
+}

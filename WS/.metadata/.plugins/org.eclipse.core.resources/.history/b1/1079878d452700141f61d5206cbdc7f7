@@ -1,0 +1,42 @@
+package co.a123.mediacion.gcm;
+
+import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ProviderManager;
+import org.xmlpull.v1.XmlPullParser;
+
+import com.antoinecampbell.gcmserver.GcmPacketExtension;
+
+
+/**
+ * Smack client implementation for GCM Cloud Connection Server.
+ * 
+ */
+public class GoogleConnectionManager {
+
+	private GoogleConnectionManager instance = null;
+	
+	private GoogleConnectionManager(){
+
+		// Add GcmPacketExtension
+		ProviderManager.getInstance().addExtensionProvider(GCM_ELEMENT_NAME, GCM_NAMESPACE,
+			new PacketExtensionProvider()
+			{
+
+			    @Override
+			    public PacketExtension parseExtension(XmlPullParser parser) throws Exception
+			    {
+				String json = parser.nextText();
+				GcmPacketExtension packet = new GcmPacketExtension(json);
+				return packet;
+			    }
+			});
+	}
+	
+	public GoogleConnectionManager getInstance(){
+		if(instance == null){
+			instance = new GoogleConnectionManager();
+		}
+		return instance;
+	}
+}

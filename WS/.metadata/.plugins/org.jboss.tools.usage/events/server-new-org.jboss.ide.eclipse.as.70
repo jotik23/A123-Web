@@ -1,9 +1,9 @@
-#Sat Aug 09 22:26:49 COT 2014
+#Mon Aug 25 18:52:26 COT 2014
 vl=0 \= failed, 1 \= successful
 l=Server Runtime ID
 ct=server
-d=1407641209185
-c=1
+d=1409010746429
+c=0
 cmp=server
 a=new
 cl=org.jboss.ide.eclipse.as.70

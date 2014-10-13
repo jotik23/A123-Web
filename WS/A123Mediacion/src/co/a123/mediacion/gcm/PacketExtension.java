@@ -1,0 +1,61 @@
+package co.a123.mediacion.gcm;
+
+import org.jivesoftware.smack.packet.DefaultPacketExtension;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.util.StringUtils;
+
+import co.a123.mediacion.util.Constant;
+
+/**
+ * XMPP Packet Extension for GCM Cloud Connection Server.
+ */
+public class PacketExtension extends DefaultPacketExtension {
+	String json;
+
+	public PacketExtension(String json) {
+		super(Constant.GCM_ELEMENT_NAME, Constant.GCM_NAMESPACE);
+		this.json = json;
+	}
+
+	public String getJson() {
+		return json;
+	}
+
+	@Override
+	public String toXML() {
+		return String.format("<%s xmlns=\"%s\">%s</%s>",
+				Constant.GCM_ELEMENT_NAME, Constant.GCM_NAMESPACE,json, Constant.GCM_ELEMENT_NAME);
+	}
+
+	public Packet toPacket() {
+		return new Message() {
+			// Must override toXML() because it includes a <body>
+			@Override
+			public String toXML() {
+
+				StringBuilder buf = new StringBuilder();
+				buf.append("<message");
+				if (getXmlns() != null) {
+					buf.append(" xmlns=\"").append(getXmlns()).append("\"");
+				}
+				if (getLanguage() != null) {
+					buf.append(" xml:lang=\"").append(getLanguage()).append("\"");
+				}
+				if (getPacketID() != null) {
+					buf.append(" id=\"").append(getPacketID()).append("\"");
+				}
+				if (getTo() != null) {
+					buf.append(" to=\"").append(StringUtils.escapeForXML(getTo())).append("\"");
+				}
+				if (getFrom() != null) {
+					buf.append(" from=\"").append(StringUtils.escapeForXML(getFrom())).append("\"");
+				}
+				buf.append(">");
+				buf.append(PacketExtension.this.toXML());
+				buf.append("</message>");
+				return buf.toString();
+			}
+		};
+	}
+}

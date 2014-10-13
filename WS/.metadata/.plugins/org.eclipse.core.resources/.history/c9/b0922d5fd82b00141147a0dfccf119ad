@@ -1,0 +1,41 @@
+package co.a123.mediacion.events;
+
+import java.util.Map;
+
+import co.a123.mediacion.util.Generator;
+
+public class EventImplementation implements EventInterface{
+
+	@Override
+	public void manipularAckEvent(Map<String, Object> jsonObject) {
+		String messageId = jsonObject.get("message_id").toString();
+		String from = jsonObject.get("from").toString();
+		System.out.println("handleAckReceipt() from: " + from + ", messageId: " + messageId);
+	}
+
+	@Override
+	public void manipularNackEvent(Map<String, Object> jsonObject) {
+		String messageId = jsonObject.get("message_id").toString();
+		String from = jsonObject.get("from").toString();
+		System.out.println("handleNackReceipt() from: " + from + ", messageId: " + messageId);
+	}
+
+	@Override
+	public void manipularRegistroDispositivo(Map<String, String> payload) {
+		String name = payload.get("name").toString();
+		
+		//addUser(name, from);
+		// Send an REGISTER response back
+		payload.put("message", "Registration successful");
+		String echo = createJsonMessage(from, Generator.getRandomMessageId(),payload, null, null, false);
+		send(echo);
+		System.out.println("Adding new user: " + name + ":" + from);
+	}
+
+	@Override
+	public void manipularEliminacionDispositivo(Map<String, Object> jsonObject) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

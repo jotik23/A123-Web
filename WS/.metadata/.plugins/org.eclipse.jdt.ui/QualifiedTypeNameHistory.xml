@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="co.a123.mediacion.gcm.GoogleConnectionManager"/>
+<fullyQualifiedTypeName name="java.lang.StringBuilder"/>
+<fullyQualifiedTypeName name="co.a123.mediacion.util.Constant"/>
+<fullyQualifiedTypeName name="co.a123.mediacion.util.Generator"/>
+<fullyQualifiedTypeName name="co.a123.mediacion.gcm.GCMConnection"/>
+<fullyQualifiedTypeName name="co.a123.mediacion.gcm.PacketExtension"/>
+<fullyQualifiedTypeName name="co.a123.mediacion.events.EventManager"/>
+<fullyQualifiedTypeName name="co.a123.mediacion.events.EventInterface"/>
+<fullyQualifiedTypeName name="co.a123.mediacion.events.EventImplementation"/>
+<fullyQualifiedTypeName name="co.a123.mediacion.events.EventInterface.EVENTOS"/>
+<fullyQualifiedTypeName name="org.jivesoftware.smack.XMPPConnection"/>
+</qualifiedTypeNameHistroy>
